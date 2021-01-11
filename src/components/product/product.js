@@ -4,7 +4,8 @@ import { useStateValue } from "../../contex/stateProvider";
 
 export default function Product({ id, title, image, price, rating }) {
   const [{ basket }, dispatch] = useStateValue();
-  console.log(basket);
+  console.log("$" + basket[0]?.price);
+
   const addToBasket = () => {
     // dispatch the item into the context
     dispatch({

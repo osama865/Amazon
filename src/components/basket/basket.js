@@ -1,8 +1,14 @@
 import React from "react";
+import { useStateValue } from "../../contex/stateProvider";
+import Item from "../item/item";
 import Subtotal from "../subtotal/subtotal";
 import "./basket.css";
 
 export default function Basket() {
+  // eslint-disable-next-line no-unused-vars
+  const [{ basket }, dispatch] = useStateValue();
+  console.log(basket[0]);
+
   return (
     <div className='basket'>
       <div className='basket-main'>
@@ -13,12 +19,14 @@ export default function Basket() {
         />
         <div>
           <h2 className='basket-title'>your shopping basket</h2>
+          {basket.map(item => (
+            <Item id={item.id} title={item.title} image={item.image} rating={item.rating} price={item.price} />
+          ))}
         </div>
       </div>
 
       <div className='basket-totlal'>
         <Subtotal></Subtotal>
-        <h2 className='shopping-basket'>the subtotal will go here</h2>
       </div>
     </div>
   );
