@@ -7,8 +7,7 @@ import "./basket.css";
 
 export default function Basket() {
   // eslint-disable-next-line no-unused-vars
-  const [{ basket }, dispatch] = useStateValue();
-  console.log(basket[0]);
+  const [{ basket, user }, dispatch] = useStateValue();
 
   return (
     <>
@@ -21,6 +20,7 @@ export default function Basket() {
             className='basket-ad'
           />
           <div>
+            <h3> hello {user?.email}</h3>
             <h2 className='basket-title'>your shopping basket</h2>
             {basket.map(item => (
               <Item id={item.id} title={item.title} image={item.image} rating={item.rating} price={item.price} />
