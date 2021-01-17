@@ -1,7 +1,9 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import axios from "axios";
 import React, { useState } from "react";
+import { useEffect } from "react";
 import CurrencyFormat from "react-currency-format";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { getBasketTotal } from "../../contex/reducer";
 import { useStateValue } from "../../contex/stateProvider";
 import Header from "../header/header";
@@ -11,16 +13,58 @@ import "./payment.css";
 export default function Payment() {
   // eslint-disable-next-line no-unused-vars
   const [{ basket, user }, dispatch] = useStateValue();
+  const history = useHistory();
+  // Use States
   const [error, setError] = useState(null);
   const [disabled, setDisabled] = useState(true);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState("");
   const [succeeded, setSucceeded] = useState(false);
+  const [clientSecret, setClientSecret] = useState("");
 
-  const handleSubmit = e => {
+  // Use Effects
+  useEffect(() => {
+    // effect
+    // generate the client secret stripe
+
+    const getClientSecret = async () => {
+      const response = await axios({
+        method: "post",
+        url: `/payment/create?total=${getBasketTotal(basket) * 100}`,
+      });
+      setClientSecret(response.data.clientSecret);
+    };
+
+    getClientSecret();
+    return () => {
+      // cleanup
+    };
+  }, [basket]);
+
+  // Handelers
+  const handleSubmit = async e => {
     e.preventDefault();
     setProcessing(true);
 
-    // const payload = await stripe
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      })
+      .then(({ paymentIntent }) => {
+        //  payment intent = payment confirmation
+        setSucceeded(true);
+        setError(null);
+        setProcessing(false);
+
+        history.replace("/orders");
+      })
+      .catch(err => {
+        // setError(true);
+        // setSucceeded(false);
+        // setProcessing(null);
+        console.error(err);
+      });
   };
   const handleChange = e => {
     // Listen for changes in the CardElement
@@ -71,7 +115,6 @@ export default function Payment() {
 
               <form onSubmit={handleSubmit}>
                 <CardElement onChange={handleChange} />
-
                 <div className='payment-price-container'>
                   <CurrencyFormat
                     renderText={value => <h3>Order Total: {value}</h3>}
@@ -81,13 +124,11 @@ export default function Payment() {
                     thousandSeparator={true}
                     prefix={"$"}
                   />
-                  <button disabled={processing || disabled || succeeded}>
-                    <span>{processing ? <p>Processing</p> : "Buy Now"}</span>
+                  <button type='submit' disabled={processing || disabled || succeeded}>
+                    <span>{processing ? "Processing" : "Buy Now"}</span>
                   </button>
                 </div>
-
-                {/* Errors */}
-                {/* {error && <div>{error}</div>} */}
+                {error && <div>{error}</div>}
               </form>
             </div>
           </div>
