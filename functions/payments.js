@@ -1,9 +1,10 @@
 // REQUIRES MODULES
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const stripe = require("stripe")(
-  "sk_test_51IAo3WIke0AV4OK6mmhWagqngt7C1L85sTGp6TOeGi70xdMmzrjRm12XNxmU8wiVCABtr9CJ0UKqpzEdnCrNqSzk00HDlTlgdn"
-);
+// require(".env");
+
+const stripe = require("stripe")(process.env.CLIENT_SECRET);
 const serverless = require("serverless-http");
 const bodyParser = require("body-parser");
 
