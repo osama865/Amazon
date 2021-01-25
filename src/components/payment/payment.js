@@ -1,5 +1,5 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import axios from "axios";
+import axios from "../../APIs/axios";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import CurrencyFormat from "react-currency-format";
@@ -29,15 +29,14 @@ export default function Payment() {
     const getClientSecret = async () => {
       const response = await axios({
         method: "post",
-        url: `/payment/create?total=${getBasketTotal(basket) * 100}`,
+        url: `/payments/create?total=${getBasketTotal(basket) * 100}`,
       });
       setClientSecret(response.data.clientSecret);
+      console.log("THE SECRET IS >>>", response.data.clientSecret);
     };
 
     getClientSecret();
-    return () => {
-      // cleanup
-    };
+    console.log("THE SECRET IS >>>", clientSecret);
   }, [basket]);
 
   // Handelers
