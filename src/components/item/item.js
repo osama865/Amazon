@@ -2,14 +2,14 @@ import React from "react";
 import { useStateValue } from "../../contex/stateProvider";
 import "./item.css";
 
-export default function Item({ id, title, image, price, rating }) {
+export default function Item({ id, title, image, price, rating, hiddeButton }) {
   // eslint-disable-next-line no-unused-vars
   const [{ basket }, dispatch] = useStateValue();
 
   const removeFromBasket = () => {
     dispatch({
       type: "REMOVE_FROM_BASKET",
-      id: id,
+      id,
     });
   };
 
@@ -29,7 +29,7 @@ export default function Item({ id, title, image, price, rating }) {
               <p>🌟</p>
             ))}
         </div>
-        <button onClick={removeFromBasket}>Remove From Basket</button>
+        {!hiddeButton && <button onClick={removeFromBasket}>Remove From Basket</button>}
       </div>
     </div>
   );

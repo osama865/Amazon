@@ -9,6 +9,7 @@ import { useStateValue } from "../../contex/stateProvider";
 import Header from "../header/header";
 import Item from "../item/item";
 import "./payment.css";
+import { db } from "../../config/firebase";
 
 export default function Payment() {
   // eslint-disable-next-line no-unused-vars
@@ -51,12 +52,18 @@ export default function Payment() {
         },
       })
       .then(({ paymentIntent }) => {
+        db.collection("users").doc(user?.uid).collection("orders").doc(paymentIntent.id).set({
+          basket,
+          amount: paymentIntent.amount,
+          created: paymentIntent.created,
+        });
         //  payment intent = payment confirmation
         setSucceeded(true);
         setError(null);
         setProcessing(false);
 
         history.replace("/orders");
+        dispatch({ type: "EMPTY_BASKET" });
       })
       .catch(err => {
         // setError(true);

@@ -8,6 +8,7 @@ import Basket from "./components/basket/basket";
 // import Header from "./components/header/header";
 import Home from "./components/home/home";
 import Login from "./components/login/login";
+import Orders from "./components/orders/orders";
 import Payment from "./components/payment/payment";
 import { auth } from "./config/firebase";
 import { useStateValue } from "./contex/stateProvider";
@@ -53,6 +54,9 @@ function App() {
           </Route>
           <Route path='/basket'>
             <Basket />
+          </Route>
+          <Route path='/orders'>
+            <Orders />
           </Route>
           <Route path='/login'>
             <Login />
